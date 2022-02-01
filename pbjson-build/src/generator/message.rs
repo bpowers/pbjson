@@ -264,7 +264,7 @@ fn write_serialize_variable<W: Write>(
                 FieldType::Scalar(ScalarType::Bytes) => {
                     writeln!(
                         writer,
-                        "{}.map(|(k, v)| (k, pbjson::private::base64::encode(v))).collect();",
+                        "{}.map(|(k, v)| (k, pbjson_any::private::base64::encode(v))).collect();",
                         Indent(indent + 1)
                     )?;
                 }
@@ -311,7 +311,7 @@ fn write_serialize_scalar_variable<W: Write>(
 ) -> Result<()> {
     let conversion = match scalar {
         ScalarType::I64 | ScalarType::U64 => "ToString::to_string",
-        ScalarType::Bytes => "pbjson::private::base64::encode",
+        ScalarType::Bytes => "pbjson_any::private::base64::encode",
         _ => {
             return writeln!(
                 writer,
@@ -726,7 +726,7 @@ fn write_deserialize_field<W: Write>(
                 _ if key.is_numeric() => {
                     write!(
                         writer,
-                        "::pbjson::private::NumberDeserialize<{}>",
+                        "::pbjson_any::private::NumberDeserialize<{}>",
                         key.rust_type()
                     )?;
                     "k.0"
@@ -741,13 +741,13 @@ fn write_deserialize_field<W: Write>(
                 FieldType::Scalar(scalar) if scalar.is_numeric() => {
                     write!(
                         writer,
-                        "::pbjson::private::NumberDeserialize<{}>",
+                        "::pbjson_any::private::NumberDeserialize<{}>",
                         scalar.rust_type()
                     )?;
                     "v.0"
                 }
                 FieldType::Scalar(ScalarType::Bytes) => {
-                    write!(writer, "::pbjson::private::BytesDeserialize<_>",)?;
+                    write!(writer, "::pbjson_any::private::BytesDeserialize<_>",)?;
                     "v.0"
                 }
                 FieldType::Enum(path) => {
@@ -804,7 +804,7 @@ fn write_encode_scalar_field<W: Write>(
         FieldModifier::Repeated => {
             writeln!(
                 writer,
-                "{}pbjson_map.next_value::<Vec<::pbjson::private::{}<_>>>()?",
+                "{}pbjson_map.next_value::<Vec<::pbjson_any::private::{}<_>>>()?",
                 Indent(indent + 1),
                 deserializer
             )?;
@@ -817,7 +817,7 @@ fn write_encode_scalar_field<W: Write>(
         _ => {
             writeln!(
                 writer,
-                "{}pbjson_map.next_value::<::pbjson::private::{}<_>>()?.0",
+                "{}pbjson_map.next_value::<::pbjson_any::private::{}<_>>()?.0",
                 Indent(indent + 1),
                 deserializer
             )?;

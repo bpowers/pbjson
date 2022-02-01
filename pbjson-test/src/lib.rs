@@ -39,7 +39,7 @@ mod tests {
     use super::*;
     use crate::test::syntax3::kitchen_sink::MixedCase;
     use chrono::TimeZone;
-    use pbjson_types::{Duration, Timestamp};
+    use pbjson_types_any::{Duration, Timestamp};
     use test::syntax3::*;
 
     #[test]

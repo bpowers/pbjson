@@ -26,7 +26,7 @@ fn main() -> Result<()> {
         .compile_protos(&proto_files, &[root])?;
 
     let descriptor_set = std::fs::read(descriptor_path)?;
-    pbjson_build::Builder::new()
+    pbjson_build_any::Builder::new()
         .register_descriptors(&descriptor_set)?
         .exclude([
             ".google.protobuf.Duration",

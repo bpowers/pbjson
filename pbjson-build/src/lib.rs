@@ -43,7 +43,7 @@
 //!     .file_descriptor_set_path(&descriptor_path)
 //!     // Override prost-types with pbjson-types
 //!     .compile_well_known_types()
-//!     .extern_path(".google.protobuf", "::pbjson_types")
+//!     .extern_path(".google.protobuf", "::pbjson_types_any")
 //!     // Generate prost structs
 //!     .compile_protos(&proto_files, &[root])?;
 //!

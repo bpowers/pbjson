@@ -84,8 +84,8 @@ fn write_deserialize_end<W: Write>(indent: usize, writer: &mut W) -> Result<()> 
 fn write_wkt_message_serde<W: Write>(indent: usize, message: &Message, rust_type: &str, writer: &mut W) -> Result<()> {
     writeln!(
         writer,
-        r#"{indent}#[::pbjson::typetag_serde(name = "type.googleapis.com/{full_name}")]
-{indent}impl ::pbjson::prost_wkt::MessageSerde for {rust_type} {{
+        r#"{indent}#[::pbjson_any::typetag_serde(name = "type.googleapis.com/{full_name}")]
+{indent}impl ::pbjson_any::prost_wkt::MessageSerde for {rust_type} {{
 {indent}    fn package_name(&self) -> &'static str {{
 {indent}        "{package_name}"
 {indent}    }}
@@ -95,10 +95,10 @@ fn write_wkt_message_serde<W: Write>(indent: usize, message: &Message, rust_type
 {indent}    fn type_url(&self) -> &'static str {{
 {indent}        "type.googleapis.com/{full_name}"
 {indent}    }}
-{indent}    fn new_instance(&self, data: Vec<u8>) -> Result<Box<dyn ::pbjson::prost_wkt::MessageSerde>, ::prost::DecodeError> {{
+{indent}    fn new_instance(&self, data: Vec<u8>) -> Result<Box<dyn ::pbjson_any::prost_wkt::MessageSerde>, ::prost::DecodeError> {{
 {indent}        let mut target = Self::default();
 {indent}        ::prost::Message::merge(&mut target, data.as_slice())?;
-{indent}        let erased: Box<dyn ::pbjson::prost_wkt::MessageSerde> = Box::new(target);
+{indent}        let erased: Box<dyn ::pbjson_any::prost_wkt::MessageSerde> = Box::new(target);
 {indent}        Ok(erased)
 {indent}    }}
 {indent}    fn encoded(&self) -> Vec<u8> {{

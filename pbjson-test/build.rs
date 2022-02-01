@@ -20,13 +20,13 @@ fn main() -> Result<()> {
     prost_build::Config::new()
         .file_descriptor_set_path(&descriptor_path)
         .compile_well_known_types()
-        .extern_path(".google.protobuf", "::pbjson_types")
+        .extern_path(".google.protobuf", "::pbjson_types_any")
         .extern_path(".test.external", "crate")
         .bytes(&[".test"])
         .compile_protos(&proto_files, &[root])?;
 
     let descriptor_set = std::fs::read(descriptor_path)?;
-    pbjson_build::Builder::new()
+    pbjson_build_any::Builder::new()
         .register_descriptors(&descriptor_set)?
         .extern_path(".test.external", "crate")
         .build(&[".test"])?;
