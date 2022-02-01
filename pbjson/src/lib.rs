@@ -18,6 +18,13 @@
 )]
 
 #[doc(hidden)]
+pub use prost_wkt;
+#[doc(hidden)]
+pub use typetag::serde as typetag_serde;
+#[doc(hidden)]
+pub use typetag;
+
+#[doc(hidden)]
 pub mod private {
     /// Re-export base64
     pub use base64;

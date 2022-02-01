@@ -8,6 +8,7 @@ mod message;
 
 pub use enumeration::generate_enum;
 pub use message::generate_message;
+use crate::message::Message;
 
 #[derive(Debug, Clone, Copy)]
 struct Indent(usize);
@@ -77,5 +78,46 @@ fn write_deserialize_end<W: Write>(indent: usize, writer: &mut W) -> Result<()> 
         r#"{indent}    }}
 {indent}}}"#,
         indent = Indent(indent),
+    )
+}
+
+fn write_wkt_message_serde<W: Write>(indent: usize, message: &Message, rust_type: &str, writer: &mut W) -> Result<()> {
+    writeln!(
+        writer,
+        r#"{indent}#[::pbjson::typetag_serde(name = "type.googleapis.com/{full_name}")]
+{indent}impl ::pbjson::prost_wkt::MessageSerde for {rust_type} {{
+{indent}    fn package_name(&self) -> &'static str {{
+{indent}        "{package_name}"
+{indent}    }}
+{indent}    fn message_name(&self) -> &'static str {{
+{indent}        "{message_name}"
+{indent}    }}
+{indent}    fn type_url(&self) -> &'static str {{
+{indent}        "type.googleapis.com/{full_name}"
+{indent}    }}
+{indent}    fn new_instance(&self, data: Vec<u8>) -> Result<Box<dyn ::pbjson::prost_wkt::MessageSerde>, ::prost::DecodeError> {{
+{indent}        let mut target = Self::default();
+{indent}        ::prost::Message::merge(&mut target, data.as_slice())?;
+{indent}        let erased: Box<dyn ::pbjson::prost_wkt::MessageSerde> = Box::new(target);
+{indent}        Ok(erased)
+{indent}    }}
+{indent}    fn encoded(&self) -> Vec<u8> {{
+{indent}        let mut buf = Vec::new();
+{indent}        buf.reserve(::prost::Message::encoded_len(self));
+{indent}        ::prost::Message::encode(self, &mut buf).expect("Failed to encode message");
+{indent}        buf
+{indent}    }}
+{indent}    fn try_encoded(&self) -> Result<Vec<u8>, ::prost::EncodeError> {{
+{indent}        let mut buf = Vec::new();
+{indent}        buf.reserve(::prost::Message::encoded_len(self));
+{indent}        ::prost::Message::encode(self, &mut buf)?;
+{indent}        Ok(buf)
+{indent}    }}
+{indent}}}"#,
+        indent = Indent(indent),
+        package_name = message.path.package(),
+        message_name = message.path.path().last().unwrap(),
+        full_name = message.path,
+        rust_type = rust_type
     )
 }

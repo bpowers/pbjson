@@ -11,6 +11,7 @@ prost = "0.9"
 pbjson = { path = "../pbjson" }
 pbjson-types = { path = "../pbjson-types" }
 serde = { version = "1.0", features = ["derive"] }
+typetag = "0.1"
 
 [dev-dependencies]
 chrono = "0.4"

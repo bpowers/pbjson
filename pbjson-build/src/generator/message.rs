@@ -27,6 +27,7 @@ use crate::message::{Field, FieldModifier, FieldType, Message, OneOf, ScalarType
 
 use super::{
     write_deserialize_end, write_deserialize_start, write_serialize_end, write_serialize_start,
+    write_wkt_message_serde,
     Indent,
 };
 use crate::descriptor::TypePath;
@@ -50,6 +51,9 @@ pub fn generate_message<W: Write>(
     write_deserialize_start(0, &rust_type, writer)?;
     write_deserialize_message(resolver, 2, message, &rust_type, writer)?;
     write_deserialize_end(0, writer)?;
+
+    write_wkt_message_serde(0, message, &rust_type, writer)?;
+
     Ok(())
 }
 
